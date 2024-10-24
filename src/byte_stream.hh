@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <queue>
 #include <string>
 #include <string_view>
 
@@ -17,6 +18,7 @@ public:
   const Reader& reader() const;
   Writer& writer();
   const Writer& writer() const;
+  uint64_t total_capacity() const;
 
   void set_error() { error_ = true; };       // Signal that the stream suffered an error.
   bool has_error() const { return error_; }; // Has the stream had an error?
@@ -25,6 +27,11 @@ protected:
   // Please add any additional state to the ByteStream here, and not to the Writer and Reader interfaces.
   uint64_t capacity_;
   bool error_ {};
+  uint64_t bytes_popped_;
+  uint64_t bytes_pushed_;
+  bool is_closed_;
+  std::queue<char> stream_;
+  std::string peek_buffer_ = "";
 };
 
 class Writer : public ByteStream
